@@ -1,23 +1,39 @@
-import { useState } from "react"
-
+import { useState,useEffect } from "react"
 
 
 const App = () =>{
-  const [image, setImage] = useState(null)
+  const [catImage, setCatImage] = useState([])
 
-  const handleClickImage = () =>{ 
-    fetch('https://dog.ceo/api/breeds/image/random')
-     .then(response => response.json())
-     .then(data => setImage(data))   
-  }
-  
+  useEffect(() => { 
+    try {
+      fetch("https://api.thecatapi.com/v1/images/search?limit=3")
+       .then(response => response.json())
+       .then( data => setCatImage(data))
+      
+    } catch (error) {
+      console.log(error);  
+    }
+  }, [])
+
+const splitTree = catImage.splice(0,3)
+ 
+console.log(catImage);
+
   return (
-    <div>
-      <div>{image?.message && <img src={image.message} alt="Dogs aleatori" width="200px"/>}</div>
-      <button onClick={handleClickImage}>Buscar imagem</button>
+    <div style={{display:"flex"}} >
+      {
+        catImage.length > 0 && (
+        splitTree.map(item =>(
+          <div key={item.id} >
+            <img style={{width:"200px"}} src={item.url} alt="imagem aleatoria de gatos" />
+          </div>
+        ))
+      )
+      }
     </div>
-    
+
   )
+
 }
 
 export { App } 
